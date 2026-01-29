@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>SmartQueue - Support</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;height:100vh;display:flex;justify-content:center;align-items:center;overflow:auto;color:white;position:relative;}
+body::before{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background-image:url('arrière plan.jpg');background-size:cover;background-position:center;filter:blur(8px);opacity:0.9;z-index:-1;}
+.card{background:linear-gradient(135deg, rgba(50,50,50,0.9), rgba(80,80,120,0.9), rgba(100,100,140,0.9));backdrop-filter:blur(12px);border-radius:20px;padding:30px;max-width:450px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.5);}
+.logo{width:60px;height:60px;margin-bottom:15px;background:rgba(255,255,255,0.1);padding:8px;border-radius:50%;}
+textarea{width:90%;padding:10px;margin:10px 0;border-radius:10px;border:none;resize:none;}
+.btn{padding:12px;width:60%;border:none;border-radius:12px;background:linear-gradient(135deg,#48dbfb,#1dd1a1);color:#1a1a1a;font-weight:bold;cursor:pointer;margin-top:10px;}
+.footer{margin-top:20px;font-size:12px;opacity:0.8;}
+.chat-box{background:rgba(255,255,255,0.1);padding:10px;border-radius:12px;height:150px;overflow:auto;text-align:left;}
+.chat-message{margin-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="card">
+<img src="logo.png" class="logo" alt="Logo">
+<h1>Support Client</h1>
+
+<div class="chat-box" id="chatBox">
+  <div class="chat-message"><b>SmartQueue:</b> Bonjour ! Veuillez entrer votre nom complet.</div>
+</div>
+
+<input type="text" id="chatInput" placeholder="Écrire votre réponse">
+<button class="btn" onclick="sendMessage()">Envoyer</button>
+<button class="btn" style="background:#ff6b6b;margin-top:5px;" onclick="openWhatsApp()">📱 Contacter WhatsApp</button>
+
+<div class="footer">© 2026 SmartQueue</div>
+</div>
+
+<script>
+let step=0;
+const chatBox=document.getElementById('chatBox');
+const chatInput=document.getElementById('chatInput');
+let userData={};
+
+function sendMessage(){
+  const msg=chatInput.value.trim();
+  if(!msg) return;
+  chatBox.innerHTML += `<div class="chat-message"><b>Vous:</b> ${msg}</div>`;
+  chatInput.value='';
+
+  if(step===0){userData.nom=msg; chatBox.innerHTML += `<div class="chat-message"><b>SmartQueue:</b> Votre prénom ?</div>`; step++;}
+  else if(step===1){userData.prenom=msg; chatBox.innerHTML += `<div class="chat-message"><b>SmartQueue:</b> Votre numéro de ticket ?</div>`; step++;}
+  else if(step===2){userData.ticket=msg; chatBox.innerHTML += `<div class="chat-message"><b>SmartQueue:</b> Décrivez votre problème :</div>`; step++;}
+  else if(step===3){userData.probleme=msg; chatBox.innerHTML += `<div class="chat-message"><b>SmartQueue:</b> Merci ! Votre demande a été enregistrée.</div>`; step++;}
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
+
+function openWhatsApp(){
+  const message=`Bonjour, je suis ${userData.nom||''} ${userData.prenom||''}, Ticket #${userData.ticket||''}. Problème: ${userData.probleme||''}`;
+  const url=`https://wa.me/2376XXXXXXXX?text=${encodeURIComponent(message)}`;
+  window.open(url,'_blank');
+}
+</script>
+</body>
+</html>

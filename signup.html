@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>SmartQueue - Inscription</title>
+<style>
+body {margin:0;font-family:Arial,sans-serif;height:100vh;display:flex;justify-content:center;align-items:center;overflow:auto;color:white;position:relative;}
+body::before {content:"";position:absolute;top:0;left:0;width:100%;height:100%;background-image:url('arrière plan.jpg');background-size:cover;background-position:center;filter:blur(8px);opacity:0.9;z-index:-1;}
+.card {background:linear-gradient(135deg, rgba(50,50,50,0.9), rgba(80,80,120,0.9), rgba(100,100,140,0.9));backdrop-filter:blur(12px);border-radius:20px;padding:30px;max-width:450px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.5);}
+.logo {width:60px;height:60px;margin-bottom:15px;background:rgba(255,255,255,0.1);padding:8px;border-radius:50%;}
+input {width:90%;padding:10px;margin:8px 0;border-radius:10px;border:none;}
+.btn {padding:12px;width:50%;border:none;border-radius:12px;background:linear-gradient(135deg,#48dbfb,#1dd1a1);color:#1a1a1a;font-weight:bold;cursor:pointer;margin-top:10px;}
+.footer {margin-top:20px;font-size:12px;opacity:0.8;}
+</style>
+</head>
+<body>
+<div class="card">
+<img src="logo.png" class="logo" alt="Logo">
+<h1>Inscription</h1>
+<input type="text" id="nom" placeholder="Nom">
+<input type="text" id="prenom" placeholder="Prénom">
+<input type="text" id="telephone" placeholder="Téléphone">
+<input type="email" id="email" placeholder="Email">
+<button class="btn" onclick="signup()">S'inscrire</button>
+<div class="footer">© 2026 SmartQueue</div>
+</div>
+
+<script>
+function signup(){
+  const nom=document.getElementById('nom').value;
+  const prenom=document.getElementById('prenom').value;
+  const telephone=document.getElementById('telephone').value;
+  const email=document.getElementById('email').value;
+
+  if(!nom||!prenom||!telephone||!email){
+    alert("Veuillez remplir tous les champs");
+    return;
+  }
+
+  const users=JSON.parse(localStorage.getItem('users'))||[];
+  users.push({nom,prenom,telephone,email});
+  localStorage.setItem('users',JSON.stringify(users));
+  alert("Inscription réussie ! Connectez-vous maintenant.");
+  window.location.href="login.html";
+}
+</script>
+</body>
+</html>

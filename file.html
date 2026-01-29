@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>SmartQueue - File d'attente</title>
+<style>
+/* Global */
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  overflow:auto;
+  color:white;
+  position:relative;
+  padding-top:40px;
+}
+body::before {
+  content:"";
+  position:absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  background-image:url('arrière plan.jpg');
+  background-size:cover;
+  background-position:center;
+  filter:blur(8px);
+  opacity:0.9;
+  z-index:-1;
+}
+
+/* Carte centrale */
+.card {
+  background:linear-gradient(135deg, rgba(50,50,50,0.9), rgba(80,80,120,0.9), rgba(100,100,140,0.9));
+  backdrop-filter:blur(12px);
+  border-radius:20px;
+  padding:30px;
+  max-width:520px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,0.5);
+  margin-bottom:40px;
+}
+
+/* Logo et titre */
+.logo {width:60px;height:60px;margin-bottom:15px;background:rgba(255,255,255,0.1);padding:8px;border-radius:50%;}
+h1 {font-size:2em;text-shadow:1px 1px 5px rgba(0,0,0,0.7);}
+
+/* Tickets */
+.ticket-list {margin-top:20px;text-align:left;}
+.ticket-item {
+  background:rgba(255,255,255,0.1);
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:8px;
+  font-weight:bold;
+}
+
+/* Avis 5 étoiles */
+#ratingDiv {margin-top:25px;text-align:center;}
+.star {
+  font-size:35px;
+  cursor:pointer;
+  color:white;
+  transition: color 0.3s;
+  margin:0 3px;
+}
+
+/* Footer */
+.footer {margin-top:20px;font-size:12px;opacity:0.8;text-align:center;}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <img src="logo.png" class="logo" alt="Logo SmartQueue">
+  <h1>File d'attente</h1>
+
+  <div class="ticket-list" id="ticketList"></div>
+
+  <!-- Avis 5 étoiles -->
+  <div id="ratingDiv">
+    <p>Évaluez votre expérience :</p>
+    <span class="star" onclick="rate(1)" id="star1">&#9733;</span>
+    <span class="star" onclick="rate(2)" id="star2">&#9733;</span>
+    <span class="star" onclick="rate(3)" id="star3">&#9733;</span>
+    <span class="star" onclick="rate(4)" id="star4">&#9733;</span>
+    <span class="star" onclick="rate(5)" id="star5">&#9733;</span>
+  </div>
+
+  <div class="footer">
+    Service client : +237 6XX XXX XXX <br>© 2026 SmartQueue
+  </div>
+</div>
+
+<script>
+// Lire le paramètre service depuis l'URL
+const urlParams = new URLSearchParams(window.location.search);
+const service = urlParams.get('service') || 'autre';
+const ticketList = document.getElementById('ticketList');
+
+function afficherTickets() {
+  ticketList.innerHTML = "";
+  const key = 'tickets_' + service;
+  const tickets = JSON.parse(localStorage.getItem(key)) || [];
+  if(tickets.length === 0){
+      ticketList.innerHTML = "<p>Aucun ticket pour ce service.</p>";
+  } else {
+      tickets.forEach(ticket => {
+          const div = document.createElement('div');
+          div.className = 'ticket-item';
+          div.innerText = "Ticket #" + ticket;
+          ticketList.appendChild(div);
+      });
+  }
+}
+
+afficherTickets();
+setInterval(afficherTickets, 2000);
+
+// Avis 5 étoiles interactif
+let currentRating = 0;
+function rate(stars){
+  currentRating = stars;
+  localStorage.setItem('rating_' + service, stars);
+  updateStars();
+  alert(`Merci pour votre note de ${stars} étoiles !`);
+}
+
+function updateStars(){
+  for(let i=1;i<=5;i++){
+    const star = document.getElementById('star'+i);
+    if(i <= currentRating){
+      star.style.color = "#ffd700"; // Jaune pour étoiles choisies
+    } else {
+      star.style.color = "white"; // Blanc sinon
+    }
+  }
+}
+
+// Charger la note précédente si elle existe
+const savedRating = localStorage.getItem('rating_' + service);
+if(savedRating){
+  currentRating = parseInt(savedRating);
+  updateStars();
+}
+</script>
+</body>
+</html>
